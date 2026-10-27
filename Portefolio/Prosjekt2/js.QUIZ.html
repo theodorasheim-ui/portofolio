@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JS Quiz</title>
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: pink;
+            padding: 20px 100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .grid {
+            width: 100%;
+            display: flex;
+            gap: 50px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        article {
+            width: 100%;
+            max-width: 900px;
+            min-height: 400px;
+            padding: 40px;
+            border-radius: 20px;
+            background-color: antiquewhite;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        h1 {
+            padding: 20px;
+            background-color: rgb(244, 218, 184);
+            border-radius: 50px;
+            width: fit-content;
+            margin-bottom: 20px;
+        }
+
+        .boxes {
+            display: flex;
+            width: 100%;
+            align-items: center;
+            justify-content: space-evenly;
+            gap: 50px;
+            border-top: 4px solid black;
+            padding-top: 10px;
+        }
+
+        .box {
+            width: 100px;
+            height: 100px;
+            border: 2px solid black;
+            border-radius: 10px;
+            background-color: aqua;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .boxes {
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .box {
+            width: auto;
+            min-height: 110px;
+            height: auto;
+            flex: 1 1 220px;
+            padding: 18px;
+            font: inherit;
+            font-size: 1.2rem;
+            overflow-wrap: anywhere;
+            cursor: pointer;
+        }
+
+        .box:disabled {
+            color: black;
+            opacity: 1;
+            cursor: default;
+        }
+
+        #neste {
+            margin: 20px 0;
+            padding: 12px 24px;
+            cursor: pointer;
+        }
+
+        #resultat {
+            margin: 15px 0;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 20px;
+            }
+
+            article {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <body>
+        <h1>JS Quiz!</h1>
+        <h2 id="poeng">Poeng: 0</h2>
+        <p id="resultat" aria-live="polite"></p>
+
+        <div class="grid">
+            <article>
+                <h2 id="sporsmal">Laster spørsmål...</h2>
+                <div class="boxes" id="svaralternativer"></div>
+            </article>
+        </div>
+
+        <button id="neste" disabled>Neste spørsmål</button>
+
+        <p>
+            Spørsmål fra
+            <a href="https://opentdb.com/">Open Trivia DB</a>
+            (<a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>).
+        </p>
+
+        <script>
+            let poeng = 0;
+            let sporsmalListe = [];
+            let harSvart = false;
+            let sisteHenting = 0;
+
+            const sporsmalElement = document.getElementById("sporsmal");
+            const svarElement = document.getElementById("svaralternativer");
+            const poengElement = document.getElementById("poeng");
+            const resultatElement = document.getElementById("resultat");
+            const nesteKnapp = document.getElementById("neste");
+
+            // API-et kan sende for eksempel &quot; i stedet for anførselstegn.
+            function dekodTekst(tekst) {
+                const felt = document.createElement("textarea");
+                felt.innerHTML = tekst;
+                return felt.value;
+            }
+
+            // Bland svarene slik at riktig svar ikke alltid står samme sted.
+            function bland(liste) {
+                for (let i = liste.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [liste[i], liste[j]] = [liste[j], liste[i]];
+                }
+                return liste;
+            }
+
+            async function hentSporsmal() {
+                // Vent hvis det har gått mindre enn 5 sekunder siden sist.
+                const ventetid = Math.max(0, 5100 - (Date.now() - sisteHenting));
+                await new Promise(resolve => setTimeout(resolve, ventetid));
+
+                sisteHenting = Date.now();
+
+                const respons = await fetch(
+                    "https://opentdb.com/api.php?amount=10&type=multiple"
+                );
+
+                if (!respons.ok) {
+                    throw new Error("Kunne ikke kontakte API-et.");
+                }
+
+                const data = await respons.json();
+
+                if (data.response_code === 5) {
+                    throw new Error("For mange forespørsler. Vent litt og prøv igjen.");
+                }
+
+                if (data.response_code !== 0 || !data.results.length) {
+                    throw new Error("Kunne ikke hente spørsmål.");
+                }
+
+                sporsmalListe = data.results;
+            }
+
+            async function visNesteSporsmal() {
+                nesteKnapp.disabled = true;
+                resultatElement.textContent = "";
+                svarElement.replaceChildren();
+                sporsmalElement.textContent = "Laster spørsmål...";
+
+                try {
+                    // Hent en ny runde når listen er tom.
+                    if (sporsmalListe.length === 0) {
+                        await hentSporsmal();
+                    }
+
+                    const sporsmal = sporsmalListe.shift();
+                    harSvart = false;
+
+                    sporsmalElement.textContent = dekodTekst(sporsmal.question);
+                    nesteKnapp.textContent = "Neste spørsmål";
+
+                    const alternativer = bland([
+                        { tekst: sporsmal.correct_answer, riktig: true },
+                        ...sporsmal.incorrect_answers.map(svar => ({
+                            tekst: svar,
+                            riktig: false
+                        }))
+                    ]);
+
+                    alternativer.forEach(alternativ => {
+                        const knapp = document.createElement("button");
+                        knapp.className = "box";
+                        knapp.textContent = dekodTekst(alternativ.tekst);
+
+                        knapp.addEventListener("click", () => {
+                            sjekkSvar(
+                                alternativ.riktig,
+                                knapp,
+                                sporsmal.correct_answer
+                            );
+                        });
+
+                        svarElement.appendChild(knapp);
+                    });
+                } catch (feil) {
+                    sporsmalElement.textContent = "Noe gikk galt.";
+                    resultatElement.textContent = feil.message;
+                    nesteKnapp.textContent = "Prøv igjen";
+                    nesteKnapp.disabled = false;
+                }
+            }
+
+            function sjekkSvar(riktig, knapp, riktigSvar) {
+                // Hindre at spilleren får flere poeng på samme spørsmål.
+                if (harSvart) return;
+                harSvart = true;
+
+                if (riktig) {
+                    poeng++;
+                    knapp.style.backgroundColor = "lightgreen";
+                    resultatElement.textContent = "Riktig!";
+                } else {
+                    knapp.style.backgroundColor = "lightcoral";
+                    resultatElement.textContent =
+                        "Feil! Riktig svar er: " + dekodTekst(riktigSvar);
+                }
+
+                poengElement.textContent = "Poeng: " + poeng;
+
+                svarElement.querySelectorAll("button").forEach(knapp => {
+                    knapp.disabled = true;
+                });
+
+                nesteKnapp.disabled = false;
+            }
+
+            nesteKnapp.addEventListener("click", visNesteSporsmal);
+
+            // Start quizen når siden åpnes.
+            visNesteSporsmal();
+        </script>
+    </body>
+
+
+</body>
+
+</html>

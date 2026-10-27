@@ -1,0 +1,280 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+img {
+    width: 100%;
+    display: block;
+}
+
+header {
+    background-color: rgb(6, 24, 79);
+    position: sticky;
+    top: 0;
+    padding: 20px 50px;
+    justify-content: space-between;
+    display: flex;
+    height: 90px;
+    align-items: center;
+}
+
+.navn {
+    color: rgb(242, 235, 235);
+    font-size: 38px;
+    font-weight: bold;
+    font-family: "Monoton";
+}
+
+nav {
+    display: flex;
+    gap: 50px;
+}
+
+
+a {
+    color: rgb(242, 235, 235);
+    text-decoration: none;
+    font-size: 25px;
+}
+
+.galleri-side {
+    .side2 {
+        background-color: antiquewhite;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 25px;
+        height: 100vh;
+        width: 100%;
+        max-width: 100%px;
+        margin: auto;
+        padding: 80px;
+    }
+
+    .bildeboks {
+        background-color: antiquewhite;
+        height: 320px;
+        border: 2px solid rgb(10, 31, 84);
+        border-radius: 12px;
+        padding: 8px;
+        overflow: hidden;
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+
+        }
+
+    }
+
+}
+
+
+.fritid-side {
+    .fritid {
+        background-color: antiquewhite;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        flex-direction: column;
+        padding: 80px 10%;
+
+    }
+
+    .intro {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 80px;
+        margin-bottom: 80px;
+
+        img {
+            width: 420px;
+            height: 420px;
+            object-fit: cover;
+            border-radius: 25px;
+
+        }
+    }
+
+    .intro-tekst {
+        width: 50%;
+
+        p {
+            font-size: 22px;
+            color: rgb(86, 123, 18s2);
+        }
+    }
+
+    .liten-tekst {
+        color: rgb(86, 123, 182);
+        font-size: 18px;
+        margin-bottom: 10px;
+
+    }
+
+    h1 {
+        color: rgb(10, 31, 84);
+        font-size: 65px;
+        margin-bottom: 20px;
+    }
+
+    .interesser {
+        display: flex;
+        gap: 25px;
+
+    }
+
+    .interesse-boks {
+        background-color: rgb(255, 254, 254);
+        flex: 1;
+        padding: 35px;
+        border-radius: 15px;
+        border: 1px solid rgb(255, 255, 255);
+
+        h2 {
+            color: rgb(10, 31, 84);
+            font-size: 27px;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 18px;
+            line-height: 1.5;
+            color: rgb(86, 123, 182);
+
+        }
+
+    } 
+}
+
+
+
+.Meg-å-en-munk p {
+    margin-top: 9px;
+    font-size: 16;
+    color: rgb(86, 123, 182);
+    text-align: center;
+}
+
+.ferier-side {
+    background-color: antiquewhite;
+}
+
+.ferier-side .ferier-intro {
+    height: 30vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 40px;
+}
+
+.ferier-side .ferier-intro-tekst {
+    max-width: 750px;
+}
+
+.ferier-side .liten-tekst {
+    color: rgb(86, 123, 182);
+    font-size: 18px;
+    margin-bottom: 10px;
+
+}
+
+.ferier-side .ferier-intro h1 {
+    color: rgb(10, 31, 84);
+    font-size: 55px;
+    margin-bottom: 15px;
+
+}
+
+.ferier-side .ferier-intro p {
+    font-size: 20px;
+    line-height: 1.6;
+    color: rgb(86, 123, 182);
+}
+
+.ferier-side .ferie-steder {
+    height: 140vh;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+    padding: 60px 10%;
+
+}
+
+.ferier-side .sted {
+    background-color: white;
+    padding: 25px;
+    border-radius: 15px;
+
+}
+
+.ferier-side .sted img {
+    height: 400px;
+    object-fit: cover;
+    border-radius: 10px;
+
+}
+
+.ferier-side .sted h2 {
+    color: rgb(10, 31, 84);
+    font-size: 28px;
+    margin-top: 15px;
+    margin-bottom: 8px;
+
+}
+
+.ferier-side .sted p {
+    font-size: 18px;
+    line-height: 1.5;
+    color: rgb(86, 123, 182);
+}
+
+footer {
+    background-color: rgb(10, 31, 84);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 45px 50px;
+    height: 240px;
+}
+
+.footer-venstre h2 {
+    color: white;
+    font-size: 28px;
+    margin-bottom: 8px;
+    font-family: "Monoton";
+}
+
+.footer-venstre p {
+    font-size: 15px;
+    color: white;
+}
+
+.footer-høyre {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.footer-høyre h3 {
+    font-size: 22px;
+    color: white;
+}
+
+.footer-lenker {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.footer-lenker a {
+    color: white;
+    font-size: 19px;
+    text-decoration: none;
+}
